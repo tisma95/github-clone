@@ -72,7 +72,7 @@ FOLDER = repos
 
 [Github PyGithub](https://github.com/PyGithub/PyGithub)
 
-[PyGithub Documentation](https://gitpython.readthedocs.io/en/stable/intro.html)
+[PyGithub Documentation](https://pygithub.readthedocs.io/en/stable/introduction.html#)
 
 [Github python-dotenv](https://github.com/theskumar/python-dotenv)
 
