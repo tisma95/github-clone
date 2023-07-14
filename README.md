@@ -18,9 +18,11 @@ Clone all branchs in folder.
 
 ## Requirement
 
-Before starting the project you need to install on your computer the following package:
+Before starting the project you need to install on your computer the following packages:
 
 [Python >=3.9](https://www.python.org/downloads/)
+
+[Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 
 
 ## Started
@@ -30,6 +32,18 @@ Run the commands inside the folder:
 1. If no **env** folder exists init the environment else skip this step
 ```cmd
     python -m venv env
+```
+or
+```cmd
+    python3 -m venv env
+```
+or for ubuntu
+```cmd
+    virtualenv venv
+```
+
+```node
+    If any problem follow this page to fix and intall virutalenv: https://gist.github.com/frfahim/73c0fad6350332cef7a653bcd762f08d
 ```
 
 2. If the env folder already exists, run the following command to activate it
@@ -53,8 +67,6 @@ Create the file **.env** inside folder with following example variable
 ```yaml
 # Clone repo host
 DOMAIN = github.com
-# Username Of Domain
-USERNAME = toto
 # Access Token To Domain
 TOKEN = toto
 # Storage Folder => Folder where the repositories will be save
@@ -70,10 +82,8 @@ FOLDER = repos
 
 ## Useful packages
 
-[Github PyGithub](https://github.com/PyGithub/PyGithub)
+[Requests Documentation](https://requests.readthedocs.io/en/latest/user/quickstart/)
 
-[PyGithub Documentation](https://pygithub.readthedocs.io/en/stable/introduction.html#)
-
-[Github python-dotenv](https://github.com/theskumar/python-dotenv)
+[Github REST API Documentation](https://docs.github.com/en/rest?apiVersion=2022-11-28)
 
 [python-dotenv Documentation](https://pypi.org/project/python-dotenv/)
