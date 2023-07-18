@@ -62,25 +62,33 @@ try:
     print(f"\nThe connexion is successfully we will clone the repositories of {USERNAME}\n")
 
     # Get the list of repositories
-    responseRepo = requests.get(responseData["repos_url"], headers=headers)
-    if responseRepo.status_code != 200:
-        print(f"\nRequest to Github to fetch repository of user {USERNAME} failed !\n")
-        print(responseRepo.text)
-        exit(0)
-    # Convert the response of repository list
-    responseRepoData = responseRepo.json()
-    for repo in responseRepoData:
-        repoName = repo["name"]
-        RESULT_FOLDER = resultPath + "/" + repoName
-        if isNewFolder or not os.path.exists(RESULT_FOLDER):
-            os.mkdir(RESULT_FOLDER)
-            print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
-            cloneCommand = f"git clone https://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{repoName}.git {RESULT_FOLDER}"
-            os.system(cloneCommand)
-        # Change the folder location
-        os.chdir(RESULT_FOLDER)
-        os.system("git pull --all")
-
+    page = 0
+    isContinue = True
+    while isContinue:
+        page += 1
+        responseRepo = requests.get(f"https://api.github.com/user/repos?page={page}", headers=headers)
+        if responseRepo.status_code != 200:
+            print(f"\nRequest to Github to fetch repository of user {USERNAME} failed !\n")
+            print(responseRepo.text)
+            exit(0)
+        else:
+            # Convert the response of repository list
+            responseRepoData = responseRepo.json()
+            if len(responseRepoData) > 0:
+                for repo in responseRepoData:
+                    repoName = repo["name"]
+                    RESULT_FOLDER = resultPath + "/" + repoName
+                    if isNewFolder or not os.path.exists(RESULT_FOLDER):
+                        os.mkdir(RESULT_FOLDER)
+                        print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
+                        cloneCommand = f"git clone https://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{repoName}.git {RESULT_FOLDER}"
+                        os.system(cloneCommand)
+                    # Change the folder location
+                    os.chdir(RESULT_FOLDER)
+                    os.system("git pull --all")
+            else:
+                # Stopped it
+                isContinue = False
 
 except Exception as err:
     print(f"\nUnexpected {err}, {type(err)}\n")
