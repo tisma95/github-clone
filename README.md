@@ -50,15 +50,28 @@ or for ubuntu
 ```cmd
     source env/bin/activate
 ```
+or for windows
+```cmd
+    env\Scripts\activate.bat
+```
 
 3 Run the installation of package via following command
 ```cmd
     pip install -r requirements.txt
 ```
 
-4. Init the environment variable by following [Environment variables](#environment-variables)
+1. Init the environment variable by following [Environment variables](#environment-variables)
+2. Create the token on your **Github** access only read access is required choose between:
+   + Token via [Fine-grained personal access tokens](https://github.com/settings/tokens?type=beta) with following authorization:<br><br>
 
-5. Run the script with command `python main.py` or `python3 main.py`
+    <img src="./img/fine-grained.png" alt="" width="50%"/>
+
+    + Token via [Personal access token (classic)](https://github.com/settings/tokens/new) with following authorization (only repo):<br><br>
+
+    <img src="./img/classic.png" alt="" width="50%"/>
+
+   1. sds
+3. Run the script with command `python main.py` or `python3 main.py`
 
 ## Environment variables ##
 
