@@ -17,7 +17,7 @@ try:
     config = dotenv_values(".env")
 
     # Define the list of expected .env variable
-    expectedKeys = ["DOMAIN", "USERNAME", "TOKEN", "FOLDER"]
+    expectedKeys = ["DOMAIN", "TOKEN", "FOLDER", "PROTOCOL"]
 
     # Verify if the contains of env
     if len(config) == 0:
@@ -43,17 +43,17 @@ try:
         os.makedirs(resultPath)
         isNewFolder = True
 
-    # TODO: format the url of API base on domain and also the url of API
-    # Get the env variable
+    # Get the env variable and build the request to call
     DOMAIN_URL = config['DOMAIN']
-    DOMAIN_API = 'https://api.' + config['DOMAIN']
+    DOMAIN_PROTOCOL = config["PROTOCOL"]
+    DOMAIN_API = f"{DOMAIN_PROTOCOL}://api.{DOMAIN_URL}"
     TOKEN = config['TOKEN']
     # Get the profile of user
     import requests
     headers = {'Authorization': f'Bearer {TOKEN}'}
     response = requests.get(DOMAIN_API + "/user", headers=headers)
     if response.status_code != 200:
-        print("\nRequest to Github failed !\n")
+        print("\nRequest to Github connexion failed !\n")
         print(response.text)
         exit(0)
     # Convert the response to json
@@ -66,7 +66,7 @@ try:
     isContinue = True
     while isContinue:
         page += 1
-        responseRepo = requests.get(f"https://api.github.com/user/repos?page={page}", headers=headers)
+        responseRepo = requests.get(f"{DOMAIN_API}/user/repos?page={page}", headers=headers)
         if responseRepo.status_code != 200:
             print(f"\nRequest to Github to fetch repository of user {USERNAME} failed !\n")
             print(responseRepo.text)
@@ -81,10 +81,11 @@ try:
                     if isNewFolder or not os.path.exists(RESULT_FOLDER):
                         os.mkdir(RESULT_FOLDER)
                         print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
-                        cloneCommand = f"git clone https://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{repoName}.git {RESULT_FOLDER}"
+                        cloneCommand = f"git clone {DOMAIN_PROTOCOL}://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{repoName}.git {RESULT_FOLDER}"
                         os.system(cloneCommand)
                     # Change the folder location
                     os.chdir(RESULT_FOLDER)
+                    # Pull all code in all branch
                     os.system("git pull --all")
             else:
                 # Stopped it

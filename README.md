@@ -80,6 +80,8 @@ Create the file **.env** inside folder with following example variable
 ```yaml
 # Clone repo host
 DOMAIN = github.com
+# Domain protocol type http or https
+PROTOCOL = https
 # Access Token To Domain
 TOKEN = toto
 # Storage Folder => Folder where the repositories will be save
