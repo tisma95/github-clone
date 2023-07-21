@@ -102,6 +102,28 @@ try:
                             metric["update"] += 1
                         # Change the folder location
                         os.chdir(RESULT_FOLDER)
+                        # Now ge the branch of repository
+                        pageBranch = 0
+                        isContinueBranch = True
+                        while isContinueBranch:
+                            pageBranch += 1
+                            branchUrl = f"{DOMAIN_API}/repos/{USERNAME}/{repoName}/branches?page={pageBranch}"
+                            responseBranch = requests.get(branchUrl, headers=headers)
+                            if responseBranch.status_code != 200:
+                                print(f"\nRequest to Github to fetch repository {repoName} branchs failed !\n")
+                                print(responseBranch.text)
+                                exit(0)
+                            else:
+                                responseBranchData = responseBranch.json()
+                                if len(responseBranchData) > 0:
+                                    # Loop to checkout all branchs
+                                    for branch in responseBranchData:
+                                        # Checkout branch
+                                        checkoutCommand = f"git fetch origin {branch['name']} && git checkout {branch['name']}"
+                                        os.system(checkoutCommand)
+                                else:
+                                    # Stop fetch the branch
+                                    isContinueBranch = False
                         # Pull all code in all branch
                         os.system("git pull --all")
                         # Increment here the number of success
