@@ -10,6 +10,11 @@
     The main package which will load the env variable to clone the gihub repositories.
 """
 
+import pyfiglet
+# Display the application logo
+ASCII_art_1 = pyfiglet.figlet_format("Github Clone", justify="center")
+print(ASCII_art_1)
+
 try:
     # Import the env
     from dotenv import dotenv_values
