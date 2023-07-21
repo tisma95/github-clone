@@ -61,9 +61,15 @@ try:
     USERNAME = responseData["login"]
     print(f"\nThe connexion is successfully we will clone the repositories of {USERNAME}\n")
 
-    # Get the list of repositories
+    # Get the list of repositories and clone each after each
     page = 0
     isContinue = True
+    metric = {
+        "success": 0,
+        "failed": 0,
+        "update": 0,
+        "new": 0
+    }
     while isContinue:
         page += 1
         responseRepo = requests.get(f"{DOMAIN_API}/user/repos?page={page}", headers=headers)
@@ -76,20 +82,38 @@ try:
             responseRepoData = responseRepo.json()
             if len(responseRepoData) > 0:
                 for repo in responseRepoData:
-                    repoName = repo["name"]
-                    RESULT_FOLDER = resultPath + "/" + repoName
-                    if isNewFolder or not os.path.exists(RESULT_FOLDER):
-                        os.mkdir(RESULT_FOLDER)
-                        print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
-                        cloneCommand = f"git clone {DOMAIN_PROTOCOL}://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{repoName}.git {RESULT_FOLDER}"
-                        os.system(cloneCommand)
-                    # Change the folder location
-                    os.chdir(RESULT_FOLDER)
-                    # Pull all code in all branch
-                    os.system("git pull --all")
+                    try:
+                        repoName = repo["name"]
+                        RESULT_FOLDER = resultPath + "/" + repoName
+                        if isNewFolder or not os.path.exists(RESULT_FOLDER):
+                            os.mkdir(RESULT_FOLDER)
+                            print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
+                            cloneCommand = f"git clone {DOMAIN_PROTOCOL}://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{repoName}.git {RESULT_FOLDER}"
+                            os.system(cloneCommand)
+                            # Increment the number of new repository which has clone
+                            metric["new"] += 1
+                        else:
+                            # Increment the number of new repository which should be updated
+                            metric["update"] += 1
+                        # Change the folder location
+                        os.chdir(RESULT_FOLDER)
+                        # Pull all code in all branch
+                        os.system("git pull --all")
+                        # Increment here the number of success
+                        metric["success"] += 1
+                    except Exception as err:
+                        print(f"\nUnexpected {err}, {type(err)}\n")
+                        # Increment here the number of failed
+                        metric["failed"] += 1
             else:
                 # Stopped it
                 isContinue = False
+    # Display the result of metric
+    print("\nThe summary of actions are:\n")
+    print(f"Number of new deposit clones: {metric['new']}")
+    print(f"Number of repository updates: {metric['update']}")
+    print(f"Number of failures: {metric['failed']}")
+    print(f"Number of successes: {metric['success']}")
 
 except Exception as err:
     print(f"\nUnexpected {err}, {type(err)}\n")
