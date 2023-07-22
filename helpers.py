@@ -45,6 +45,11 @@ def getUrl(config, urlTYpe):
         DOMAIN_API = f"{DOMAIN_PROTOCOL}://api.{DOMAIN_URL}"
         if urlTYpe.upper() == constants.API_URL_TYPE:
             return DOMAIN_API
+        elif urlTYpe.upper() == constants.REPOSITORY_URL_TYPE:
+            USERNAME = config["USERNAME"]
+            TOKEN = config["TOKEN"]
+            REPOSITORY_NAME = config["REPOSITORY"]
+            return f"{DOMAIN_PROTOCOL}://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{REPOSITORY_NAME}.git"
         else:
             print(f"\n{functionName}::Unknown url type {urlTYpe}\n")
             exit(0)

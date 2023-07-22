@@ -33,9 +33,7 @@ try:
     resultPath = config["FOLDER"]
     isNewFolder = createFolder(path=resultPath)
 
-    # Get the env variable and build the request to call
-    DOMAIN_URL = config['DOMAIN']
-    DOMAIN_PROTOCOL = config["PROTOCOL"]
+    # Get the domain API url
     DOMAIN_API = getUrl(config=config, urlTYpe=constants.API_URL_TYPE)
     TOKEN = config['TOKEN']
     # Get the profile of user
@@ -81,7 +79,10 @@ try:
                         if isNewFolder or not os.path.exists(RESULT_FOLDER):
                             os.mkdir(RESULT_FOLDER)
                             print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
-                            cloneCommand = f"git clone {DOMAIN_PROTOCOL}://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{repoName}.git {RESULT_FOLDER}"
+                            # Add the repo name in config to build the right url to use
+                            config["REPOSITORY"] = repoName
+                            repoCloneUrl = getUrl(config=config, urlTYpe=constants.REPOSITORY_URL_TYPE)
+                            cloneCommand = f"git clone {repoCloneUrl} {RESULT_FOLDER}"
                             os.system(cloneCommand)
                             # Increment the number of new repository which has clone
                             metric["new"] += 1
