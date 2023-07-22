@@ -25,7 +25,6 @@ try:
     # Verification of config
     verificationCnfig(config=config)
 
-
     # Create the folder for clone
     import os
     resultPath = config["FOLDER"]
