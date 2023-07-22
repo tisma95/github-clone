@@ -10,6 +10,76 @@
     The helper functions which will be used inside the main file.
 """
 
+def getUrl(config, urlTYpe):
+    """
+        Name
+        -----
+        getUrl
+
+        Description
+        ------------
+        Helper function to get the right url to call for API.
+
+        Parameters
+        -----------
+        :param config(required dict): the dictionary of configuration
+        :param urlTYpe(required string): the type of url to get between API, USER, REPOSITORY, BRANCH
+            + API: to return the url of host API
+            + USER: to return the url to use to fetch the user
+            + REPOSITORY: to return the url to use to fetch the repository of user
+            + BRANCH: to return the url to use to fetch the branches of specific repository
+
+        Response
+        ---------
+        Will return the url to use to call API
+
+        Example
+        --------
+        getUrl(config, 'USER') => will response like https://api.github.com
+    """
+    import constants
+    functionName = "getUrl"
+    try:
+        DOMAIN_URL = config['DOMAIN']
+        DOMAIN_PROTOCOL = config["PROTOCOL"]
+        DOMAIN_API = f"{DOMAIN_PROTOCOL}://api.{DOMAIN_URL}"
+        if urlTYpe.upper() == constants.API_URL_TYPE:
+            return DOMAIN_API
+        else:
+            print(f"\n{functionName}::Unknown url type {urlTYpe}\n")
+            exit(0)
+    except Exception as err:
+        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        exit(0)
+
+def getRepositoryNames():
+    """
+        Name
+        -----
+        createFolder
+
+        Description
+        ------------
+        Helper function to return the list of repositories names for connected user.
+
+        Parameters
+        -----------
+        # TODO: to be complete
+        :param path(required str): the location path of folder to create example /home/toto/test
+
+        Response
+        ---------
+        # TODO: to be completed
+        Will return True if new folder has been created else False
+    """
+    functionName = "getRepositoryNames"
+    try:
+       # TODO: code here
+       pass
+    except Exception as err:
+        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        exit(0)
+
 def createFolder(path):
     """
         Name

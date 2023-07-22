@@ -14,10 +14,11 @@
 import pyfiglet
 import os
 from helpers import *
+import constants
 
 # Display the application logo
-ASCII_art_1 = pyfiglet.figlet_format("Github Clone", justify="center")
-print(ASCII_art_1)
+ASCII_art = pyfiglet.figlet_format(constants.APP_NAME, justify="center")
+print(ASCII_art)
 
 try:
     # Import the env
@@ -35,7 +36,7 @@ try:
     # Get the env variable and build the request to call
     DOMAIN_URL = config['DOMAIN']
     DOMAIN_PROTOCOL = config["PROTOCOL"]
-    DOMAIN_API = f"{DOMAIN_PROTOCOL}://api.{DOMAIN_URL}"
+    DOMAIN_API = getUrl(config=config, urlTYpe=constants.API_URL_TYPE)
     TOKEN = config['TOKEN']
     # Get the profile of user
     import requests
@@ -49,6 +50,9 @@ try:
     responseData = response.json()
     USERNAME = responseData["login"]
     print(f"\nThe connexion is successfully we will clone the repositories of {USERNAME}\n")
+
+    # Add the username in config
+    config["USERNAME"] = USERNAME
 
     # Get the list of repositories and clone each after each
     page = 0
