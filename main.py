@@ -11,6 +11,7 @@
 """
 
 import pyfiglet
+from helpers import *
 # Display the application logo
 ASCII_art_1 = pyfiglet.figlet_format("Github Clone", justify="center")
 print(ASCII_art_1)
@@ -21,22 +22,9 @@ try:
 
     config = dotenv_values(".env")
 
-    # Define the list of expected .env variable
-    expectedKeys = ["DOMAIN", "TOKEN", "FOLDER", "PROTOCOL"]
+    # Verification of config
+    verificationCnfig(config=config)
 
-    # Verify if the contains of env
-    if len(config) == 0:
-        print("\nThe .env file is empty or not found\n")
-        exit(0)
-
-    # Verify that each expected keys are present
-    for key in expectedKeys:
-        if key not in config:
-            print(f"\nThe key/value of {key} is required inside .env\n")
-            exit(0)
-        elif len(config[key]) < 1:
-            print(f"\nThe {key} inside .env is empty\n")
-            exit(0)
 
     # Create the folder for clone
     import os
