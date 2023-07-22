@@ -10,6 +10,59 @@
     The helper functions which will be used inside the main file.
 """
 
+def getRepositoryBranchesNames(config, repoName):
+    """
+        Name
+        -----
+        getRepositoryBranchesNames
+
+        Description
+        ------------
+        Helper function to return the list of branches of specific repository of connected user.
+
+        Parameters
+        -----------
+        :param config(required dict): the configuration environment variables
+        :param repoName(required str): the name of repository which branchs should be clone
+
+        Response
+        ---------
+        Will return the list of user repository branches names
+    """
+    functionName = "getRepositoryBranchesNames"
+    import requests
+    import constants
+    response = []
+    try:
+        # Now fetch the branch of repository
+        page = 0
+        isContinueBranch = True
+        headers = headers = {'Authorization': f'Bearer {config["TOKEN"]}'}
+        while isContinueBranch:
+            page += 1
+            # Add the repository name in config to get the url to fetch the branch list
+            config["REPOSITORY"] = repoName
+            branchListUrl = getUrl(config=config, urlTYpe=constants.BRANCH_LIST_URL_TYPE)
+            # Fetch the branch
+            responseBranch = requests.get(f"{branchListUrl}?page={page}", headers=headers)
+            if responseBranch.status_code != 200:
+                print(f"\n{functionName}::Request to Github to fetch repository {repoName} branchs failed !\n")
+                print(responseBranch.text)
+                return response
+            else:
+                responseBranchData = responseBranch.json()
+                if len(responseBranchData) > 0:
+                    # Loop to add the name of all branchs
+                    for branch in responseBranchData:
+                        response.append(branch['name'])
+                else:
+                    # Stop fetch the branch
+                    isContinueBranch = False
+        return response
+    except Exception as err:
+        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        return response
+
 def cloneRepository(config, repoName, location):
     """
         Name
@@ -97,6 +150,10 @@ def getUrl(config, urlTYpe):
             return f"{DOMAIN_PROTOCOL}://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{REPOSITORY_NAME}.git"
         elif urlTYpe.upper() == constants.REPOSITORY_LIST_URL_TYPE:
             return f"{DOMAIN_API}/user/repos"
+        elif urlTYpe.upper() == constants.BRANCH_LIST_URL_TYPE:
+            USERNAME = config["USERNAME"]
+            REPOSITORY_NAME = config["REPOSITORY"]
+            return f"{DOMAIN_API}/repos/{USERNAME}/{REPOSITORY_NAME}/branches"
         else:
             print(f"\n{functionName}::Unknown url type {urlTYpe}\n")
             exit(0)

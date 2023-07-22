@@ -62,48 +62,65 @@ try:
     repoNames = getRepositoryNames(config=config)
     for repoName in repoNames:
         try:
+            isCloneRepo = False
             RESULT_FOLDER = resultPath + "/" + repoName
             if isNewFolder or not os.path.exists(RESULT_FOLDER):
                 createFolder(RESULT_FOLDER)
                 print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
                 # Call the function to clone the repository
+                # TODO: integrate in clone repository before clone to get the list of branch if not found not clone return is not clone
                 isCloneRepo = cloneRepository(config=config, repoName=repoName, location=RESULT_FOLDER)
-                if (isCloneRepo):
+                if isCloneRepo:
                     metric["new"] += 1
-                    metric["success"] += 1
                 else:
                     metric["failed"] += 1
             else:
+                # Set true it is already clone
+                isCloneRepo = True
                 # Increment the number of new repository which should be updated
                 metric["update"] += 1
-            # Change the folder location
-            os.chdir(RESULT_FOLDER)
-            # Now ge the branch of repository
-            pageBranch = 0
-            isContinueBranch = True
-            while isContinueBranch:
-                pageBranch += 1
-                branchUrl = f"{DOMAIN_API}/repos/{USERNAME}/{repoName}/branches?page={pageBranch}"
-                responseBranch = requests.get(branchUrl, headers=headers)
-                if responseBranch.status_code != 200:
-                    print(f"\nRequest to Github to fetch repository {repoName} branchs failed !\n")
-                    print(responseBranch.text)
-                    exit(0)
-                else:
-                    responseBranchData = responseBranch.json()
-                    if len(responseBranchData) > 0:
-                        # Loop to checkout all branchs
-                        for branch in responseBranchData:
-                            # Checkout branch
-                            checkoutCommand = f"git fetch origin {branch['name']} && git checkout {branch['name']}"
-                            os.system(checkoutCommand)
-                    else:
-                        # Stop fetch the branch
-                        isContinueBranch = False
-            # Pull all code in all branch
-            os.system("git pull --all")
-            # Increment here the number of success
-            metric["success"] += 1
+
+            # Checkout and update the branch if repo is clone successfully
+            if isCloneRepo:
+                # TODO: create helper function to clone the list of branch and return boolean true or false in false and in response add tuple, one for response and another for failure response branch which failed and add it in metric
+                # Change the folder location
+                os.chdir(RESULT_FOLDER)
+                # Get the list of branches
+                listOfBranchs = getRepositoryBranchesNames(config=config, repoName=repoName)
+                if len(listOfBranchs) > 0:
+                    for branchName in listOfBranchs:
+                        # Checkout branch
+                        checkoutCommand = f"git fetch origin {branchName} && git checkout {branchName}"
+                        os.system(checkoutCommand)
+                    # Pull all code in all branch
+                    os.system("git pull --all")
+                    # Increment here the number of success
+                    metric["success"] += 1
+            # # Now ge the branch of repository
+            # page = 0
+            # isContinueBranch = True
+            # while isContinueBranch:
+            #     page += 1
+            #     # Add the repository name in config to get the url to fetch the branch list
+            #     config["REPOSITORY"] = repoName
+            #     branchListUrl = getUrl(config=config, urlTYpe=constants.BRANCH_LIST_URL_TYPE)
+            #     # Fetch the branch
+            #     responseBranch = requests.get(f"{branchListUrl}/page={page}", headers=headers)
+            #     if responseBranch.status_code != 200:
+            #         print(f"\nRequest to Github to fetch repository {repoName} branchs failed !\n")
+            #         print(responseBranch.text)
+            #         exit(0)
+            #     else:
+            #         responseBranchData = responseBranch.json()
+            #         if len(responseBranchData) > 0:
+            #             # Loop to checkout all branchs
+            #             for branch in responseBranchData:
+            #                 # Checkout branch
+            #                 checkoutCommand = f"git fetch origin {branch['name']} && git checkout {branch['name']}"
+            #                 os.system(checkoutCommand)
+            #         else:
+            #             # Stop fetch the branch
+            #             isContinueBranch = False
         except Exception as err:
             print(f"\nUnexpected {err}, {type(err)}\n")
             # Increment here the number of failed
