@@ -45,7 +45,7 @@ def getUrl(config, urlTYpe):
         DOMAIN_API = f"{DOMAIN_PROTOCOL}://api.{DOMAIN_URL}"
         if urlTYpe.upper() == constants.API_URL_TYPE:
             return DOMAIN_API
-        elif urlTYpe.upper() == constants.REPOSITORY_URL_TYPE:
+        elif urlTYpe.upper() == constants.REPOSITORY_CLONE_URL_TYPE:
             USERNAME = config["USERNAME"]
             TOKEN = config["TOKEN"]
             REPOSITORY_NAME = config["REPOSITORY"]

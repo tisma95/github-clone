@@ -81,7 +81,7 @@ try:
                             print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
                             # Add the repo name in config to build the right url to use
                             config["REPOSITORY"] = repoName
-                            repoCloneUrl = getUrl(config=config, urlTYpe=constants.REPOSITORY_URL_TYPE)
+                            repoCloneUrl = getUrl(config=config, urlTYpe=constants.REPOSITORY_CLONE_URL_TYPE)
                             cloneCommand = f"git clone {repoCloneUrl} {RESULT_FOLDER}"
                             os.system(cloneCommand)
                             # Increment the number of new repository which has clone
