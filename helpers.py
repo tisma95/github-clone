@@ -59,7 +59,7 @@ def getUrl(config, urlTYpe):
         print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
         exit(0)
 
-def getRepositoryNames():
+def getRepositoryNames(config):
     """
         Name
         -----
@@ -71,18 +71,43 @@ def getRepositoryNames():
 
         Parameters
         -----------
-        # TODO: to be complete
-        :param path(required str): the location path of folder to create example /home/toto/test
+        :param config(required dict): the configuration environment variables
 
         Response
         ---------
-        # TODO: to be completed
-        Will return True if new folder has been created else False
+        Will return the list of user repository name
     """
     functionName = "getRepositoryNames"
+    import requests
+    import constants
     try:
-       # TODO: code here
-       pass
+        # Prepare the requests need
+        page = 0
+        isContinue = True
+        headers = headers = {'Authorization': f'Bearer {config["TOKEN"]}'}
+        username = config["USERNAME"]
+        response = []
+        while isContinue:
+            page += 1
+            # BUild the repo list url before clone
+            repoListUrl = getUrl(config=config, urlTYpe=constants.REPOSITORY_LIST_URL_TYPE)
+            # Call the API to fetch the list of repositories
+            responseRepo = requests.get(f"{repoListUrl}?page={page}", headers=headers)
+            if responseRepo.status_code != 200:
+                print(f"\n{functionName}::Request to Github to fetch repository of user {username} failed !\n")
+                print(responseRepo.text)
+                exit(0)
+            else:
+                # Convert the response of repository list
+                responseRepoData = responseRepo.json()
+                if len(responseRepoData) > 0:
+                    for repo in responseRepoData:
+                        # Add the repo name in list
+                        response.append(repo["name"])
+                else:
+                    # All repositories has been fetched
+                    isContinue = False
+        return response
     except Exception as err:
         print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
         exit(0)
