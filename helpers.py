@@ -50,6 +50,8 @@ def getUrl(config, urlTYpe):
             TOKEN = config["TOKEN"]
             REPOSITORY_NAME = config["REPOSITORY"]
             return f"{DOMAIN_PROTOCOL}://{USERNAME}:{TOKEN}@{DOMAIN_URL}/{USERNAME}/{REPOSITORY_NAME}.git"
+        elif urlTYpe.upper() == constants.REPOSITORY_LIST_URL_TYPE:
+            return f"{DOMAIN_API}/user/repos"
         else:
             print(f"\n{functionName}::Unknown url type {urlTYpe}\n")
             exit(0)
@@ -61,7 +63,7 @@ def getRepositoryNames():
     """
         Name
         -----
-        createFolder
+        getRepositoryNames
 
         Description
         ------------

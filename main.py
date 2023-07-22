@@ -63,7 +63,10 @@ try:
     }
     while isContinue:
         page += 1
-        responseRepo = requests.get(f"{DOMAIN_API}/user/repos?page={page}", headers=headers)
+        # BUild the repo list url before clone
+        repoListUrl = getUrl(config=config, urlTYpe=constants.REPOSITORY_LIST_URL_TYPE)
+        # Call the API to fetch the list of repositories
+        responseRepo = requests.get(f"{repoListUrl}?page={page}", headers=headers)
         if responseRepo.status_code != 200:
             print(f"\nRequest to Github to fetch repository of user {USERNAME} failed !\n")
             print(responseRepo.text)
