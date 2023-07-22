@@ -10,6 +10,39 @@
     The helper functions which will be used inside the main file.
 """
 
+def createFolder(path):
+    """
+        Name
+        -----
+        createFolder
+
+        Description
+        ------------
+        Helper function to create the folder inside the location folder and all parents folder if not created.
+
+        Parameters
+        -----------
+        :param path(required str): the location path of folder to create example /home/toto/test
+
+        Response
+        ---------
+        Will return True if new folder has been created else False
+    """
+    functionName = "createFolder"
+    try:
+        # Create the folders if not exists
+        import os
+        isNewFolder = False
+        if not os.path.exists(path):
+            # Create the folder
+            print(f"\nThe result folder {path} not exists it will be created !\n")
+            os.makedirs(path)
+            isNewFolder = True
+        return isNewFolder
+    except Exception as err:
+        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        exit(0)
+
 def verificationCnfig(config):
     """
         Name
@@ -52,3 +85,4 @@ def verificationCnfig(config):
                 exit(0)
     except Exception as err:
         print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        exit(0)

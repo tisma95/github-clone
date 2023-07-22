@@ -10,8 +10,11 @@
     The main package which will load the env variable to clone the gihub repositories.
 """
 
+# Import the modules
 import pyfiglet
+import os
 from helpers import *
+
 # Display the application logo
 ASCII_art_1 = pyfiglet.figlet_format("Github Clone", justify="center")
 print(ASCII_art_1)
@@ -26,14 +29,8 @@ try:
     verificationCnfig(config=config)
 
     # Create the folder for clone
-    import os
     resultPath = config["FOLDER"]
-    isNewFolder = False
-    if not os.path.exists(resultPath):
-        # Create the folder
-        print(f"\nThe result folder {resultPath} not exists it will be created !\n")
-        os.makedirs(resultPath)
-        isNewFolder = True
+    isNewFolder = createFolder(path=resultPath)
 
     # Get the env variable and build the request to call
     DOMAIN_URL = config['DOMAIN']
