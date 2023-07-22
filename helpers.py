@@ -10,6 +10,51 @@
     The helper functions which will be used inside the main file.
 """
 
+def cloneRepository(config, repoName, location):
+    """
+        Name
+        -----
+        cloneRepository
+
+        Description
+        ------------
+        Helper function to clone the repository in specific location.
+
+        Parameters
+        -----------
+        :param config(required dict): the dictionary of configuration
+        :param repoName(required str): the name of repository which should be clone
+        :param location (required str): the location of folder where to clone will not clone if not found the folder
+
+        Response
+        ---------
+        Will return True if the clone is successfull else False
+
+        Example
+        --------
+        cloneRepository(config, 'test', '/home/test/repo') => will clone the repository test in folder /home/test/repo
+    """
+    import constants
+    import os
+    functionName = "cloneRepository"
+    try:
+        if not os.path.exists(location):
+            print(f"\n{functionName}::Not found folder in location {location} !\n")
+            return False
+        elif not os.path.isdir(location):
+            print(f"\n{functionName}::Location {location} is not a folder we cannot clone the repo {repoName} there !\n")
+            return False
+        else:
+            # Add the repo name in config to build the right url to use
+            config["REPOSITORY"] = repoName
+            repoCloneUrl = getUrl(config=config, urlTYpe=constants.REPOSITORY_CLONE_URL_TYPE)
+            cloneCommand = f"git clone {repoCloneUrl} {location}"
+            os.system(cloneCommand)
+            return True
+    except Exception as err:
+        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        return False
+
 def getUrl(config, urlTYpe):
     """
         Name
