@@ -92,7 +92,7 @@ FOLDER = repos
 
 + If new package is install we can update the **requirements.txt** with command `pip freeze > requirements.txt` or `python3 -m pip freeze > requirements.txt`
 
-+ Exit the env via: `deactivate`
++ Exit the env via: `deactivate` or for windows `env\Scripts\activate.bat`
 
 
 ## Useful packages
