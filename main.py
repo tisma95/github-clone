@@ -59,6 +59,10 @@ try:
         "update": 0,
         "new": 0
     }
+    # Define the list of repo list which has failed to be cloned
+    repoListFailed = []
+    # Deine the list of repo list which branches have failed to be cloned
+    repoListPartial = []
     repoData = getRepositoryData(config=config)
     for repo in repoData:
         try:
@@ -72,12 +76,13 @@ try:
                 createFolder(RESULT_FOLDER)
                 print(f"\nStarting cloning of repository {repoName} inside {RESULT_FOLDER}\n")
                 # Call the function to clone the repository
-                # TODO: integrate in clone repository before clone to get the list of branch if not found not clone return is not clone
                 isCloneRepo = cloneRepository(config=config, repoName=repoName, location=RESULT_FOLDER)
                 if isCloneRepo:
                     metric["new"] += 1
                 else:
                     metric["failed"] += 1
+                    # Add in failded list
+                    repoListFailed.append(repoName)
             else:
                 # Set true it is already clone
                 isCloneRepo = True
@@ -86,11 +91,9 @@ try:
 
             # Checkout and update the branch if repo is clone successfully
             if isCloneRepo:
-                # TODO: create helper function to clone the list of branch and return boolean true or false in false and in response add tuple, one for response and another for failure response branch which failed and add it in metric
                 # Get the list of branches
                 listOfBranchs = getRepositoryBranchesNames(config=config, repoName=repoName)
                 if len(listOfBranchs) > 0:
-                    # TODO: add code here to clone all branches
                     # Clone each branch
                     isBranchClone = cloneRepoBranches(location=RESULT_FOLDER, listOfBranch=listOfBranchs)
                     if isBranchClone:
@@ -99,31 +102,13 @@ try:
                     else:
                         # Increment the number of failed
                         metric["failed"] += 1
-            # # Now ge the branch of repository
-            # page = 0
-            # isContinueBranch = True
-            # while isContinueBranch:
-            #     page += 1
-            #     # Add the repository name in config to get the url to fetch the branch list
-            #     config["REPOSITORY"] = repoName
-            #     branchListUrl = getUrl(config=config, urlTYpe=constants.BRANCH_LIST_URL_TYPE)
-            #     # Fetch the branch
-            #     responseBranch = requests.get(f"{branchListUrl}/page={page}", headers=headers)
-            #     if responseBranch.status_code != 200:
-            #         print(f"\nRequest to Github to fetch repository {repoName} branchs failed !\n")
-            #         print(responseBranch.text)
-            #         exit(0)
-            #     else:
-            #         responseBranchData = responseBranch.json()
-            #         if len(responseBranchData) > 0:
-            #             # Loop to checkout all branchs
-            #             for branch in responseBranchData:
-            #                 # Checkout branch
-            #                 checkoutCommand = f"git fetch origin {branch['name']} && git checkout {branch['name']}"
-            #                 os.system(checkoutCommand)
-            #         else:
-            #             # Stop fetch the branch
-            #             isContinueBranch = False
+                        # Add in branch failed list
+                        repoListPartial.append(repoName)
+                else:
+                    # Increment the number of failed
+                    metric["failed"] += 1
+                    # Add in branch failed list
+                    repoListPartial.append(repoName)
         except Exception as err:
             print(f"\nUnexpected {err}, {type(err)}\n")
             # Increment here the number of failed
@@ -135,6 +120,15 @@ try:
     print(f"Number of repository updates: {metric['update']}")
     print(f"Number of failures: {metric['failed']}")
     print(f"Number of successes: {metric['success']}")
-
+    if len(repoListFailed) > 0:
+        print(f"\nThe list of {len(repoListFailed)} {'repository which' if len(repoListFailed) < 2 else 'repositories which are failed'} failed to be cloned:\n")
+        for repo in repoListFailed:
+            print(repo)
+        print("\n")
+    if len(repoListPartial) > 0:
+        print(f"\nThe list of {len(repoListPartial)} {'repository' if len(repoListPartial) < 2 else 'repositories'} which failed to be updated:\n")
+        for repo in repoListPartial:
+            print(repo)
+        print("\n")
 except Exception as err:
     print(f"\nUnexpected {err}, {type(err)}\n")
