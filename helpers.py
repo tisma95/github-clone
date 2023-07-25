@@ -145,12 +145,17 @@ def cloneRepository(config, repoName, location):
             print(f"\n{functionName}::Location {location} is not a folder we cannot clone the repo {repoName} there !\n")
             return False
         else:
-            # Add the repo name in config to build the right url to use
-            config["REPOSITORY"] = repoName
-            repoCloneUrl = getUrl(config=config, urlTYpe=constants.REPOSITORY_CLONE_URL_TYPE)
-            cloneCommand = f"git clone {repoCloneUrl} {location}"
-            os.system(cloneCommand)
-            return True
+            # Get the repo branch should be clone only if one branch found for this repository
+            repoBranch = getRepositoryBranchesNames(config=config, repoName=repoName)
+            if len(repoBranch) > 0:
+                # Add the repo name in config to build the right url to use
+                config["REPOSITORY"] = repoName
+                repoCloneUrl = getUrl(config=config, urlTYpe=constants.REPOSITORY_CLONE_URL_TYPE)
+                cloneCommand = f"git clone {repoCloneUrl} {location}"
+                os.system(cloneCommand)
+                return True
+            else:
+                return False
     except Exception as err:
         print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
         return False
