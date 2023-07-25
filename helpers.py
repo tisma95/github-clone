@@ -177,7 +177,10 @@ def getRepositoryData(config):
 
         Response
         ---------
-        Will return the list of user repository name
+        Will return the list of user repository data, the response will be an array of dict with description for each item:
+        + name: the name of repository
+        + url: the clone url of repository
+        + isFork: the boolean to specify if the repository is cloning repository or not
     """
     functionName = "getRepositoryData"
     import requests
