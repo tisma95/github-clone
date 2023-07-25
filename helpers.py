@@ -10,6 +10,50 @@
     The helper functions which will be used inside the main file.
 """
 
+def updateFork(config, repoName):
+    """
+        Name
+        -----
+        updateFork
+
+        Description
+        ------------
+        Helper function to update the fork repository.
+
+        Parameters
+        -----------
+        :param config(required dict): the configuration environment variables
+        :param repoName(required str): the name of repository which branchs should be clone
+
+        Response
+        ---------
+        Return True if the repository has been updated else False
+
+        Example
+        --------
+        updateFork(config, 'test') => will update the fork repository 'test'
+    """
+    functionName = "updateFork"
+    try:
+        import requests
+        import constants
+        # Get the API url
+        apiUrl = getUrl(config=config, urlTYpe=constants.API_URL_TYPE)
+        url = f"{apiUrl}/repos/{config['USERNAME']}/{repoName}/merge-upstream"
+        # Fetch the branch
+        headers = headers = {'Authorization': f'Bearer {config["TOKEN"]}'}
+        responseSync = requests.post(url, headers=headers)
+        if responseSync.status_code != 200:
+            print(f"\n{functionName}::Request to Github to synchronize fork repository {repoName} failed !\n")
+            print(responseSync.text)
+            return False
+        else:
+            print(responseSync.text())
+        return True
+    except Exception as err:
+        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        return False
+
 def cloneRepoBranches(location, listOfBranch):
     """
         Name
@@ -27,7 +71,7 @@ def cloneRepoBranches(location, listOfBranch):
 
         Response
         ---------
-        Will checkout the branch of repository
+        Will checkout the branch of repository and return True if successfull else False
 
         Example
         --------

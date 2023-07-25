@@ -61,13 +61,21 @@ try:
     }
     # Define the list of repo list which has failed to be cloned
     repoListFailed = []
-    # Deine the list of repo list which branches have failed to be cloned
+    # Define the list of repo list which branches have failed to be cloned
     repoListPartial = []
+    # Define the list of failed update forked
+    repoForkFailed = []
     repoData = getRepositoryData(config=config)
     for repo in repoData:
         try:
             # Get the repo name
             repoName = repo["name"]
+            # If the repository is fork repository run the update of fork before any actions
+            if repo["isFork"] == True:
+                print(f"\nStarting synchronization of fork repository {repoName}\n")
+                isSync = updateFork(config=config, repoName=repoName)
+                if not isSync:
+                    repoForkFailed.append(repoName)
             # Specify if the repo is clone or not
             isCloneRepo = False
             # Build the folder and clone the repository if necessary
@@ -94,6 +102,7 @@ try:
                 # Get the list of branches
                 listOfBranchs = getRepositoryBranchesNames(config=config, repoName=repoName)
                 if len(listOfBranchs) > 0:
+                    print(f"\nStarting updating of repository {repoName} branches inside {RESULT_FOLDER}\n")
                     # Clone each branch
                     isBranchClone = cloneRepoBranches(location=RESULT_FOLDER, listOfBranch=listOfBranchs)
                     if isBranchClone:
@@ -120,6 +129,11 @@ try:
     print(f"Number of repository updates: {metric['update']}")
     print(f"Number of failures: {metric['failed']}")
     print(f"Number of successes: {metric['success']}")
+    if len(repoForkFailed) > 0:
+        print(f"\nThe list of {len(repoForkFailed)} fork {'repository' if len(repoForkFailed) < 2 else 'repositories'} which failed to be synchronized:\n")
+        for repo in repoForkFailed:
+            print(repo)
+        print("\n")
     if len(repoListFailed) > 0:
         print(f"\nThe list of {len(repoListFailed)} {'repository which' if len(repoListFailed) < 2 else 'repositories which are failed'} failed to be cloned:\n")
         for repo in repoListFailed:
