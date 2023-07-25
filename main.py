@@ -68,8 +68,9 @@ try:
     repoData = getRepositoryData(config=config)
     for repo in repoData:
         try:
-            # Get the repo name
+            # Get the repo name and default branch
             repoName = repo["name"]
+            defaulBranch = repo["defaultBranch"]
             # If the repository is fork repository run the update of fork before any actions
             if repo["isFork"] == True:
                 print(f"\nStarting synchronization of fork repository {repoName}\n")
@@ -104,7 +105,7 @@ try:
                 if len(listOfBranchs) > 0:
                     print(f"\nStarting updating of repository {repoName} branches inside {RESULT_FOLDER}\n")
                     # Clone each branch
-                    isBranchClone = cloneRepoBranches(location=RESULT_FOLDER, listOfBranch=listOfBranchs)
+                    isBranchClone = cloneRepoBranches(location=RESULT_FOLDER, listOfBranch=listOfBranchs, defaultBranch=defaulBranch)
                     if isBranchClone:
                         # Increment here the number of success
                         metric["success"] += 1

@@ -54,7 +54,7 @@ def updateFork(config, repoName):
         print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
         return False
 
-def cloneRepoBranches(location, listOfBranch):
+def cloneRepoBranches(location, listOfBranch, defaultBranch):
     """
         Name
         -----
@@ -68,6 +68,7 @@ def cloneRepoBranches(location, listOfBranch):
         -----------
         :param location (required str): the location of folder where the repository is located
         :param listOfBranch (required array of str): the list of repository branch
+        :param defaultBranch (required str): the default branch of repository to clone
 
         Response
         ---------
@@ -75,7 +76,7 @@ def cloneRepoBranches(location, listOfBranch):
 
         Example
         --------
-        cloneRepoBranches("/home/test/repo/test", ['main', 'test']) => will checkout the branch of repository each branch 'main' and 'test'
+        cloneRepoBranches("/home/test/repo/test", ['main', 'test'], "main") => will checkout the branch of repository each branch 'main' and 'test'
     """
     import os
     functionName = "cloneRepoBranches"
@@ -90,12 +91,14 @@ def cloneRepoBranches(location, listOfBranch):
             # Change the folder location
             os.chdir(location)
             for branchName in listOfBranch:
-                # Checkout branch
-                checkoutCommand = f"git fetch origin {branchName} && git checkout {branchName}"
-                os.system(checkoutCommand)
+                if branchName != defaultBranch:
+                    # Checkout branch
+                    checkoutCommand = f"git fetch origin {branchName} && git checkout {branchName}"
+                    os.system(checkoutCommand)
             # Pull all code in all branch
             os.system("git pull --all")
-
+            # Move to default branch
+            os.system(f"git checkout {defaultBranch}")
             return True
     except Exception as err:
         print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
@@ -307,7 +310,8 @@ def getRepositoryData(config):
                         response.append({
                             "name": repo["name"],
                             "url": repo["clone_url"] if repo["clone_url"] else "",
-                            "isFork": True if repo["fork"] else False
+                            "isFork": True if repo["fork"] else False,
+                            "defaultBranch": repo["default_branch"]
                         })
                 else:
                     # All repositories has been fetched
