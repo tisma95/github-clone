@@ -161,11 +161,11 @@ def getUrl(config, urlTYpe):
         print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
         exit(0)
 
-def getRepositoryNames(config):
+def getRepositoryData(config):
     """
         Name
         -----
-        getRepositoryNames
+        getRepositoryData
 
         Description
         ------------
@@ -179,7 +179,7 @@ def getRepositoryNames(config):
         ---------
         Will return the list of user repository name
     """
-    functionName = "getRepositoryNames"
+    functionName = "getRepositoryData"
     import requests
     import constants
     try:
@@ -205,7 +205,11 @@ def getRepositoryNames(config):
                 if len(responseRepoData) > 0:
                     for repo in responseRepoData:
                         # Add the repo name in list
-                        response.append(repo["name"])
+                        response.append({
+                            "name": repo["name"],
+                            "url": repo["clone_url"] if repo["clone_url"] else "",
+                            "isFork": True if repo["fork"] else False
+                        })
                 else:
                     # All repositories has been fetched
                     isContinue = False

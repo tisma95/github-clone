@@ -59,10 +59,14 @@ try:
         "update": 0,
         "new": 0
     }
-    repoNames = getRepositoryNames(config=config)
-    for repoName in repoNames:
+    repoData = getRepositoryData(config=config)
+    for repo in repoData:
         try:
+            # Get the repo name
+            repoName = repo["name"]
+            # Specify if the repo is clone or not
             isCloneRepo = False
+            # Build the folder and clone the repository if necessary
             RESULT_FOLDER = resultPath + "/" + repoName
             if isNewFolder or not os.path.exists(RESULT_FOLDER):
                 createFolder(RESULT_FOLDER)
