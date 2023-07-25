@@ -40,15 +40,19 @@ def updateFork(config, repoName):
         # Get the API url
         apiUrl = getUrl(config=config, urlTYpe=constants.API_URL_TYPE)
         url = f"{apiUrl}/repos/{config['USERNAME']}/{repoName}/merge-upstream"
-        # Fetch the branch
-        headers = headers = {'Authorization': f'Bearer {config["TOKEN"]}'}
-        responseSync = requests.post(url, headers=headers)
+        # Update the fork
+        url = f"https://api.github.com/repos/{config['USERNAME']}/{repoName}/merge-upstream"
+        # TODO: integrate here the default branch to sync
+        payload = {"branch": "master"}
+        headers = {
+            "Authorization": f"Bearer {config['TOKEN']}",
+            "Content-Type": "application/json"
+        }
+        responseSync = requests.post(url, json=payload, headers=headers)
         if responseSync.status_code != 200:
             print(f"\n{functionName}::Request to Github to synchronize fork repository {repoName} failed !\n")
             print(responseSync.text)
             return False
-        else:
-            print(responseSync.text())
         return True
     except Exception as err:
         print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
