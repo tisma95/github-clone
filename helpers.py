@@ -10,6 +10,53 @@
     The helper functions which will be used inside the main file.
 """
 
+def cloneRepoBranches(location, listOfBranch):
+    """
+        Name
+        -----
+        cloneRepoBranches
+
+        Description
+        ------------
+        Helper function to clone each branch of repository in specific location.
+
+        Parameters
+        -----------
+        :param location (required str): the location of folder where the repository is located
+        :param listOfBranch (required array of str): the list of repository branch
+
+        Response
+        ---------
+        Will checkout the branch of repository
+
+        Example
+        --------
+        cloneRepoBranches("/home/test/repo/test", ['main', 'test']) => will checkout the branch of repository each branch 'main' and 'test'
+    """
+    import os
+    functionName = "cloneRepoBranches"
+    try:
+        if not os.path.exists(location):
+            print(f"\n{functionName}::Not found folder in location {location} !\n")
+            return False
+        elif not os.path.isdir(location):
+            print(f"\n{functionName}::Location {location} is not a folder we cannot clone the branches there !\n")
+            return False
+        else:
+            # Change the folder location
+            os.chdir(location)
+            for branchName in listOfBranch:
+                # Checkout branch
+                checkoutCommand = f"git fetch origin {branchName} && git checkout {branchName}"
+                os.system(checkoutCommand)
+            # Pull all code in all branch
+            os.system("git pull --all")
+
+            return True
+    except Exception as err:
+        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        return False
+
 def getRepositoryBranchesNames(config, repoName):
     """
         Name

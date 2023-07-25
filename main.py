@@ -87,19 +87,18 @@ try:
             # Checkout and update the branch if repo is clone successfully
             if isCloneRepo:
                 # TODO: create helper function to clone the list of branch and return boolean true or false in false and in response add tuple, one for response and another for failure response branch which failed and add it in metric
-                # Change the folder location
-                os.chdir(RESULT_FOLDER)
                 # Get the list of branches
                 listOfBranchs = getRepositoryBranchesNames(config=config, repoName=repoName)
                 if len(listOfBranchs) > 0:
-                    for branchName in listOfBranchs:
-                        # Checkout branch
-                        checkoutCommand = f"git fetch origin {branchName} && git checkout {branchName}"
-                        os.system(checkoutCommand)
-                    # Pull all code in all branch
-                    os.system("git pull --all")
-                    # Increment here the number of success
-                    metric["success"] += 1
+                    # TODO: add code here to clone all branches
+                    # Clone each branch
+                    isBranchClone = cloneRepoBranches(location=RESULT_FOLDER, listOfBranch=listOfBranchs)
+                    if isBranchClone:
+                        # Increment here the number of success
+                        metric["success"] += 1
+                    else:
+                        # Increment the number of failed
+                        metric["failed"] += 1
             # # Now ge the branch of repository
             # page = 0
             # isContinueBranch = True
