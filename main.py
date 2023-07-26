@@ -20,6 +20,10 @@ import constants
 ASCII_art = pyfiglet.figlet_format(constants.APP_NAME, justify="center")
 print(ASCII_art)
 
+# Init start time
+import time
+startTime = time.time()
+
 try:
     # Import the env
     from dotenv import dotenv_values
@@ -147,3 +151,7 @@ try:
         print("\n")
 except Exception as err:
     print(f"\nUnexpected {err}, {type(err)}\n")
+finally:
+    # Show analyse time
+    endTime = time.time()
+    print(f"\n\nThis programme takes: {getSecondsConvertion(endTime-startTime)}\n")
