@@ -83,9 +83,9 @@ DOMAIN = github.com
 # Domain protocol type http or https
 PROTOCOL = https
 # Access Token To Domain
-TOKEN = toto
+TOKEN = your_generate_token_here
 # Storage Folder => Folder where the repositories will be save
-FOLDER = repos
+FOLDER = folder_absolute_path_here
 ```
 
 ## Other informations
