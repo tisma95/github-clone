@@ -75,6 +75,8 @@ try:
             # Get the repo name and default branch
             repoName = repo["name"]
             defaulBranch = repo["defaultBranch"]
+            # Specify the right user of repository because the owner of repository can be another user not login user
+            config["USERNAME"] = repo["owner"]
             # If the repository is fork repository run the update of fork before any actions
             if repo["isFork"] == True:
                 print(f"\nStarting synchronization of fork repository {repoName}\n")

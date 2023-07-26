@@ -373,6 +373,7 @@ def getRepositoryData(config):
                             "name": repo["name"],
                             "url": repo["clone_url"] if repo["clone_url"] else "",
                             "isFork": True if repo["fork"] else False,
+                            "owner": repo["owner"]["login"],
                             "defaultBranch": repo["default_branch"]
                         })
                 else:
