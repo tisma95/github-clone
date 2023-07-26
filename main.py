@@ -74,7 +74,7 @@ try:
             # If the repository is fork repository run the update of fork before any actions
             if repo["isFork"] == True:
                 print(f"\nStarting synchronization of fork repository {repoName}\n")
-                isSync = updateFork(config=config, repoName=repoName)
+                isSync = updateFork(config=config, repoName=repoName, branch=defaulBranch)
                 if not isSync:
                     repoForkFailed.append(repoName)
             # Specify if the repo is clone or not
