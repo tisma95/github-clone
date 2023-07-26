@@ -10,7 +10,7 @@
     The helper functions which will be used inside the main file.
 """
 
-def updateFork(config, repoName):
+def updateFork(config, repoName, branch):
     """
         Name
         -----
@@ -24,6 +24,7 @@ def updateFork(config, repoName):
         -----------
         :param config(required dict): the configuration environment variables
         :param repoName(required str): the name of repository which branchs should be clone
+        :param branch(required str): the name of branch to clone
 
         Response
         ---------
@@ -42,8 +43,7 @@ def updateFork(config, repoName):
         url = f"{apiUrl}/repos/{config['USERNAME']}/{repoName}/merge-upstream"
         # Update the fork
         url = f"https://api.github.com/repos/{config['USERNAME']}/{repoName}/merge-upstream"
-        # TODO: integrate here the default branch to sync
-        payload = {"branch": "master"}
+        payload = {"branch": branch}
         headers = {
             "Authorization": f"Bearer {config['TOKEN']}",
             "Content-Type": "application/json"
