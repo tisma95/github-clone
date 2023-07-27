@@ -33,11 +33,13 @@ def getSecondsConvertion(seconds):
         getSecondsConvertion(10000) => Return '0 year(s) and 0 month(s) and 0 day(s) and 2 hour(s) and 46 minute(s) and 40 second(s)'
         getSecondsConvertion(100000000) => Return '3 year(s) and 2 month(s) and 17 day(s) and 9 hour(s) and 46 minute(s) and 40 second(s)'
     """
-    functionName = "updateFork"
+    functionName = "getSecondsConvertion"
+    import logging
 
     # Verify the parameter
     if seconds < 0:
-        print(f"\n{functionName}::The parameter 'seconds' must be a positive number\n")
+        message = f"\n{functionName}::The parameter 'seconds' must be a positive number\n"
+        logMessage(message=message, logType="error")
         exit(0)
 
     # Defines constantes
@@ -59,13 +61,16 @@ def getSecondsConvertion(seconds):
         return f"{int(years)} year(s) and {int(months)} month(s) and {int(days)} day(s) and {int(hours)} hour(s) and {int(minutes)} minute(s) and {int(seconds)} second(s)"
 
     except AssertionError:
-        print(f"\n{functionName}::You must give a positive number for second(s) !\n")
+        message = f"{functionName}::You must give a positive number for second(s) !"
+        logMessage(message=message, logType="error")
         exit(0)
     except ValueError:
-        print(f"\n{functionName}::You must give a number for second(s) !\n")
+        message = f"{functionName}::You must give a number for second(s) !"
+        logMessage(message=message, logType="error")
         exit(0)
     except:
-        print(f"\n{functionName}::Error has met!\n")
+        message = f"{functionName}::Error has met!"
+        logMessage(message=message, logType="error")
         exit(0)
 
 def updateFork(config, repoName, branch):
@@ -93,6 +98,7 @@ def updateFork(config, repoName, branch):
         updateFork(config, 'test') => will update the fork repository 'test'
     """
     functionName = "updateFork"
+    import logging
     try:
         import requests
         import constants
@@ -108,12 +114,14 @@ def updateFork(config, repoName, branch):
         }
         responseSync = requests.post(url, json=payload, headers=headers)
         if responseSync.status_code != 200:
-            print(f"\n{functionName}::Request to Github to synchronize fork repository {repoName} failed !\n")
-            print(responseSync.text)
+            message = f"{functionName}::Request to Github to synchronize fork repository {repoName} failed !"
+            logMessage(message=message, logType="error")
+            logMessage(message=responseSync.text, logType="error", addSeparator=False)
             return False
         return True
     except Exception as err:
-        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        message = f"{functionName}::Unexpected {err}, {type(err)}"
+        logMessage(message=message, logType="error")
         return False
 
 def cloneRepoBranches(location, listOfBranch, defaultBranch):
@@ -141,13 +149,16 @@ def cloneRepoBranches(location, listOfBranch, defaultBranch):
         cloneRepoBranches("/home/test/repo/test", ['main', 'test'], "main") => will checkout the branch of repository each branch 'main' and 'test'
     """
     import os
+    import logging
     functionName = "cloneRepoBranches"
     try:
         if not os.path.exists(location):
-            print(f"\n{functionName}::Not found folder in location {location} !\n")
+            message = f"{functionName}::Not found folder in location {location} !"
+            logMessage(message=message, logType="error")
             return False
         elif not os.path.isdir(location):
-            print(f"\n{functionName}::Location {location} is not a folder we cannot clone the branches there !\n")
+            message = f"{functionName}::Location {location} is not a folder we cannot clone the branches there !"
+            logMessage(message=message, logType="error")
             return False
         else:
             # Change the folder location
@@ -163,7 +174,8 @@ def cloneRepoBranches(location, listOfBranch, defaultBranch):
             os.system(f"git checkout {defaultBranch}")
             return True
     except Exception as err:
-        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        message = f"{functionName}::Unexpected {err}, {type(err)}"
+        logMessage(message=message, logType="error")
         return False
 
 def getRepositoryBranchesNames(config, repoName):
@@ -188,6 +200,7 @@ def getRepositoryBranchesNames(config, repoName):
     functionName = "getRepositoryBranchesNames"
     import requests
     import constants
+    import logging
     response = []
     try:
         # Now fetch the branch of repository
@@ -202,8 +215,9 @@ def getRepositoryBranchesNames(config, repoName):
             # Fetch the branch
             responseBranch = requests.get(f"{branchListUrl}?page={page}", headers=headers)
             if responseBranch.status_code != 200:
-                print(f"\n{functionName}::Request to Github to fetch repository {repoName} branchs failed !\n")
-                print(responseBranch.text)
+                message = f"{functionName}::Request to Github to fetch repository {repoName} branchs failed !"
+                logMessage(message=message, logType="error")
+                logMessage(message=responseBranch.text, logType="error", addSeparator=False)
                 return response
             else:
                 responseBranchData = responseBranch.json()
@@ -216,7 +230,8 @@ def getRepositoryBranchesNames(config, repoName):
                     isContinueBranch = False
         return response
     except Exception as err:
-        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        message = f"{functionName}::Unexpected {err}, {type(err)}"
+        logMessage(message=message, logType="error")
         return response
 
 def cloneRepository(config, repoName, location):
@@ -245,13 +260,16 @@ def cloneRepository(config, repoName, location):
     """
     import constants
     import os
+    import logging
     functionName = "cloneRepository"
     try:
         if not os.path.exists(location):
-            print(f"\n{functionName}::Not found folder in location {location} !\n")
+            message = f"{functionName}::Not found folder in location {location} !"
+            logMessage(message=message, logType="error")
             return False
         elif not os.path.isdir(location):
-            print(f"\n{functionName}::Location {location} is not a folder we cannot clone the repo {repoName} there !\n")
+            message = f"{functionName}::Location {location} is not a folder we cannot clone the repo {repoName} there !"
+            logMessage(message=message, logType="error")
             return False
         else:
             # Get the repo branch should be clone only if one branch found for this repository
@@ -266,7 +284,8 @@ def cloneRepository(config, repoName, location):
             else:
                 return False
     except Exception as err:
-        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        message = f"{functionName}::Unexpected {err}, {type(err)}"
+        logMessage(message=message, logType="error")
         return False
 
 def getUrl(config, urlTYpe):
@@ -297,6 +316,7 @@ def getUrl(config, urlTYpe):
         getUrl(config, 'USER') => will response like https://api.github.com
     """
     import constants
+    import logging
     functionName = "getUrl"
     try:
         DOMAIN_URL = config['DOMAIN']
@@ -316,10 +336,12 @@ def getUrl(config, urlTYpe):
             REPOSITORY_NAME = config["REPOSITORY"]
             return f"{DOMAIN_API}/repos/{USERNAME}/{REPOSITORY_NAME}/branches"
         else:
-            print(f"\n{functionName}::Unknown url type {urlTYpe}\n")
+            message = f"{functionName}::Unknown url type {urlTYpe}"
+            logMessage(message=message, logType="error")
             exit(0)
     except Exception as err:
-        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        message = f"{functionName}::Unexpected {err}, {type(err)}"
+        logMessage(message=message, logType="error")
         exit(0)
 
 def getRepositoryData(config):
@@ -360,8 +382,9 @@ def getRepositoryData(config):
             # Call the API to fetch the list of repositories
             responseRepo = requests.get(f"{repoListUrl}?page={page}", headers=headers)
             if responseRepo.status_code != 200:
-                print(f"\n{functionName}::Request to Github to fetch repository of user {username} failed !\n")
-                print(responseRepo.text)
+                message = f"{functionName}::Request to Github to fetch repository of user {username} failed !"
+                logMessage(message=message, logType="error")
+                logMessage(message=responseRepo.text, logType="error", addSeparator=False)
                 exit(0)
             else:
                 # Convert the response of repository list
@@ -373,6 +396,7 @@ def getRepositoryData(config):
                             "name": repo["name"],
                             "url": repo["clone_url"] if repo["clone_url"] else "",
                             "isFork": True if repo["fork"] else False,
+                            "owner": repo["owner"]["login"],
                             "defaultBranch": repo["default_branch"]
                         })
                 else:
@@ -380,7 +404,8 @@ def getRepositoryData(config):
                     isContinue = False
         return response
     except Exception as err:
-        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        message = f"{functionName}::Unexpected {err}, {type(err)}"
+        logMessage(message=message, logType="error")
         exit(0)
 
 def createFolder(path):
@@ -408,12 +433,14 @@ def createFolder(path):
         isNewFolder = False
         if not os.path.exists(path):
             # Create the folder
-            print(f"\nThe result folder {path} not exists it will be created !\n")
+            message = f"The result folder {path} not exists it will be created !"
+            logMessage(message=message, logType="info")
             os.makedirs(path)
             isNewFolder = True
         return isNewFolder
     except Exception as err:
-        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        message = f"{functionName}::Unexpected {err}, {type(err)}"
+        logMessage(message=message, logType="error")
         exit(0)
 
 def verificationCnfig(config):
@@ -443,19 +470,58 @@ def verificationCnfig(config):
 
         # Verify if the contains of env
         if not config or len(config) == 0:
-            print("\nThe .env file is empty or not found\n")
+            message = "The .env file is empty or not found"
+            logMessage(message=message, logType="error")
             exit(0)
         elif not isinstance(config, dict):
-            print("\nThe .env file is not dictionary\n")
+            message = "The .env file is not dictionary"
+            logMessage(message=message, logType="error")
             exit(0)
         # Verify that each expected keys are present
         for key in expectedKeys:
             if key not in config:
-                print(f"\nThe key/value of {key} is required inside .env\n")
+                message = f"The key/value of {key} is required inside .env"
+                logMessage(message=message, logType="error")
                 exit(0)
             elif len(config[key]) < 1:
-                print(f"\nThe {key} inside .env is empty\n")
+                message = f"The {key} inside .env is empty"
+                logMessage(message=message, logType="error")
                 exit(0)
     except Exception as err:
-        print(f"\n{functionName}::Unexpected {err}, {type(err)}\n")
+        message = f"{functionName}::Unexpected {err}, {type(err)}"
+        logMessage(message=message, logType="error")
         exit(0)
+
+def logMessage(message, logType, addSeparator=True):
+    """
+        Name
+        -----
+        logMesaage
+
+        Description
+        ------------
+        Helper function use to display the message in terminal and in log.
+
+        Parameters
+        -----------
+        :param message(required str): the log message to display.
+        :param logType (requied str): the log type between error, warning, info
+        :param addSeparator (required boolean): define if for terminal the seperator should be done
+
+        Response
+        ---------
+        None
+    """
+    import logging
+    # Display the log in terminal
+    if addSeparator:
+        print(f"\n{message}\n")
+    else:
+        print(message)
+    # Display the log in log file according to message type
+    if logType and logType.lower() == "info":
+        logging.info(message)
+    elif logType and logType.lower() == "error":
+        logging.error(message)
+    elif logType and logType.lower() == "warning":
+        logging.warning(message)

@@ -10,9 +10,13 @@
 
 ## Description
 
-This repository goal is to clone all repositories of github associate to the user.
+This repository goal is to clone all repositories of github associate to the user:
+ + the personal user repositories private and public,
+ + the user organization repositories,
+ + the ancestor repositories,
+ + the fork repositories.
 
-If the repository existed pull the updated code.
+If the repository existed pull to update will be.
 
 Clone all branchs in folder.
 
@@ -70,7 +74,10 @@ or for windows
 
     <img src="./img/classic.png" alt="" width="50%"/>
 
-   1. sds
+    > **Warning**
+    > If you have the fork repository, should give the workflow authorization to permits to synchronize the fork repository before clone it. Like following image:
+    <img src="./img/workflow.png" alt="" width="50%"/>
+
 3. Run the script with command `python main.py` or `python3 main.py`
 
 ## Environment variables ##
@@ -83,9 +90,9 @@ DOMAIN = github.com
 # Domain protocol type http or https
 PROTOCOL = https
 # Access Token To Domain
-TOKEN = toto
+TOKEN = your_generate_token_here
 # Storage Folder => Folder where the repositories will be save
-FOLDER = repos
+FOLDER = folder_absolute_path_here
 ```
 
 ## Other informations
