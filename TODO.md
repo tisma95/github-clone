@@ -1,1 +1,0 @@
-+ TODO: set the log inside the file python https://docs.python.org/fr/3/howto/logging.html
