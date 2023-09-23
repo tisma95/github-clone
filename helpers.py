@@ -168,10 +168,12 @@ def cloneRepoBranches(location, listOfBranch, defaultBranch):
                     # Checkout branch
                     checkoutCommand = f"git fetch origin {branchName} && git checkout {branchName}"
                     os.system(checkoutCommand)
-            # Pull all code in all branch
-            os.system("git pull --all")
+                    # Pull all code in branch
+                    os.system("git pull")
             # Move to default branch
             os.system(f"git checkout {defaultBranch}")
+            # Pull all code in branch
+            os.system("git pull")
             return True
     except Exception as err:
         message = f"{functionName}::Unexpected {err}, {type(err)}"
