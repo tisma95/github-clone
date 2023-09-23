@@ -107,7 +107,7 @@ try:
             # Specify if the repo is clone or not
             isCloneRepo = False
             # Build the folder and clone the repository if necessary
-            RESULT_FOLDER = resultPath + "/" + repoName
+            RESULT_FOLDER = resultPath + "/" + repoName.replace(" ", '-')
             if isNewFolder or not os.path.exists(RESULT_FOLDER):
                 createFolder(RESULT_FOLDER)
                 message = f"Starting cloning of repository {repoName} inside {RESULT_FOLDER}"
