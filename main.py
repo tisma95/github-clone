@@ -162,7 +162,7 @@ try:
     # Display the result of metric
     message = f"The summary of actions are:"
     logMessage(message=message, logType="info")
-    message = f"Number of new deposit clones: {metric['new']}"
+    message = f"Number of new repository clones: {metric['new']}"
     logMessage(message=message, logType="info", addSeparator=False)
     message = f"Number of repository updates: {metric['update']}"
     logMessage(message=message, logType="info", addSeparator=False)
