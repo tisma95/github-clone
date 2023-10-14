@@ -67,8 +67,8 @@ or for windows
     pip install -r requirements.txt
 ```
 
-1. Init the environment variable by following [Environment variables](#environment-variables)
-2. Create the token on your **Github** access only read access is required choose between:
+4. Init the environment variable by following [Environment variables](#environment-variables)
+5. Create the token on your **Github** access only read access is required choose between:
    + Token via [Fine-grained personal access tokens](https://github.com/settings/tokens?type=beta) with following authorization:<br><br>
 
     <img src="./img/fine-grained.png" alt="" width="50%"/>
@@ -81,7 +81,7 @@ or for windows
     > If you have the fork repository, should give the workflow authorization to permits to synchronize the fork repository before clone it. Like following image:
     <img src="./img/workflow.png" alt="" width="50%"/>
 
-3. Run the script with command `python main.py` or `python3 main.py`
+6. Run the script with command `python main.py` or `python3 main.py`
 
 ## Environment variables ##
 
