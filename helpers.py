@@ -170,10 +170,18 @@ def cloneRepoBranches(location, listOfBranch, defaultBranch):
                     os.system(checkoutCommand)
                     # Pull all code in branch
                     os.system("git pull")
+                    # Fetch git lfs files if exists
+                    os.system("git lfs ls-files")
+                    os.system("git lfs fetch --all")
+                    os.system("git lfs checkout")
             # Move to default branch
             os.system(f"git checkout {defaultBranch}")
             # Pull all code in branch
             os.system("git pull")
+            # Fetch git lfs files if exists
+            os.system("git lfs ls-files")
+            os.system("git lfs fetch --all")
+            os.system("git lfs checkout")
             return True
     except Exception as err:
         message = f"{functionName}::Unexpected {err}, {type(err)}"
