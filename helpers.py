@@ -124,6 +124,27 @@ def updateFork(config, repoName, branch):
         logMessage(message=message, logType="error")
         return False
 
+
+def updateCommitAndLFS():
+    """
+        Name
+        -----
+        updateCommitAndLFS
+
+        Description
+        ------------
+        Helper function to execute the defense push and update the lfs file.
+    """
+    import os
+    # Fetch git lfs files if exists
+    os.system("git lfs ls-files")
+    os.system("git lfs fetch --all")
+    os.system("git lfs checkout")
+    # Add defense push if some changes
+    os.system("git add .")
+    os.system("git commit -m 'Synchro by Github Clone Script'")
+    os.system("git push")
+
 def cloneRepoBranches(location, listOfBranch, defaultBranch):
     """
         Name
@@ -170,18 +191,14 @@ def cloneRepoBranches(location, listOfBranch, defaultBranch):
                     os.system(checkoutCommand)
                     # Pull all code in branch
                     os.system("git pull")
-                    # Fetch git lfs files if exists
-                    os.system("git lfs ls-files")
-                    os.system("git lfs fetch --all")
-                    os.system("git lfs checkout")
+                    # Apply defense
+                    updateCommitAndLFS()
             # Move to default branch
             os.system(f"git checkout {defaultBranch}")
             # Pull all code in branch
             os.system("git pull")
-            # Fetch git lfs files if exists
-            os.system("git lfs ls-files")
-            os.system("git lfs fetch --all")
-            os.system("git lfs checkout")
+            # Apply defense
+            updateCommitAndLFS()
             return True
     except Exception as err:
         message = f"{functionName}::Unexpected {err}, {type(err)}"
